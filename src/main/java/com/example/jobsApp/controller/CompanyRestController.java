@@ -73,9 +73,10 @@ public class CompanyRestController {
 	}
 	
 	@PostMapping(value = "/add")
-	public ResponseEntity<Company> addNewCompany(@RequestBody Company newComp) {
+	public ResponseEntity<Company> addNewCompany(@RequestBody CompanyDto newComp) {
 		log.trace("Creating Company");
-		Company comp = company.save(newComp);
+		Company comp = new Company(newComp.name(),newComp.ort(),newComp.plz()); //company.save(newComp);
+		comp = company.save(comp);
 		if(comp==null) {
 			return new ResponseEntity<>(comp, HttpStatus.INTERNAL_SERVER_ERROR);
 		}else {
