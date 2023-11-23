@@ -16,12 +16,14 @@ import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,31 +45,36 @@ public class CompanyRestController {
 	}
 	
 	@GetMapping(value= {"/test","/test/{name}"})
-	public String testConnection(@PathVariable("name") String i) {
-		if(i.equals("marco")) {
+	public String testConnection(@PathVariable("name") Optional<String> i) {
+		if(i.get().equals("marco")) {
 			return "polo";
 		}
 		return "Test successful";
 	}
 	
 	@GetMapping("/stat/total")
-	public String totalNumberCompanies() {
+	public ResponseEntity<String> totalNumberCompanies() {
+		log.trace("Counting Companies");
 		long c = company.count();
-		log.trace(c+" Companies");
-		return String.valueOf(c);
+		return new ResponseEntity<>(String.valueOf(c),HttpStatus.OK);
 	}
 	
 	@GetMapping("/all")
-	public List<Company> allCompanies() {
+	public ResponseEntity<List<Company>> allCompanies() {
 		List<Company> a = company.findAll();
 		log.trace("Looked for Companies");
-		return a;
+		return new ResponseEntity<>(a, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/findById/{id}")
-	public Company getCompanyByID(@PathVariable("id") Long id) {
+	public ResponseEntity<?> getCompanyByID(@PathVariable("id") Long id) {
 		log.trace("Search Company by ID: "+id);
-		return company.findAll().stream().filter(t -> t.getId()==id).toList().get(0);
+		
+		if (!company.existsById(id)) {
+            return new ResponseEntity<>("{\"error\":\"Company not found.\"}", HttpStatus.NOT_FOUND);
+        }
+		//company.findAll().stream().filter(t -> t.getId()==id).toList().get(0)
+		return new ResponseEntity<>(company.findById(id), HttpStatus.OK);
 		//return a.get(0);
 		//return ;
 	}
@@ -75,7 +82,7 @@ public class CompanyRestController {
 	@PostMapping(value = "/add")
 	public ResponseEntity<Company> addNewCompany(@RequestBody CompanyDto newComp) {
 		log.trace("Creating Company");
-		Company comp = new Company(newComp.name(),newComp.ort(),newComp.plz()); //company.save(newComp);
+		Company comp = new Company(newComp.name(),newComp.logo_url(),newComp.address(),newComp.plz(),newComp.ort(),newComp.website()); //company.save(newComp);
 		comp = company.save(comp);
 		if(comp==null) {
 			return new ResponseEntity<>(comp, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -85,60 +92,33 @@ public class CompanyRestController {
 	}
 	
 	@DeleteMapping(value = "/remove/{id}")
-	public void removeCompany(@PathVariable("id") Long id){
+	public ResponseEntity<String> removeCompany(@PathVariable("id") Long id){
+		log.trace("Deleteing company by id "+id);
+	    
+		if (!company.existsById(id)) {
+            return new ResponseEntity<>("{\"error\":\"Company not found.\"}", HttpStatus.NOT_FOUND);
+        }
 		
-		Company comp = company.findAll().stream().filter(t -> t.getId()==id).toList().get(0);// deleteById(id);
-		company.delete(comp);
-		//String s = "Deleted "+id;
-		//return new ResponseEntity<>(s, HttpStatus.OK); 
+		try {
+	        company.deleteById(id);
+	        String s = "{\"deleted\":" + id + "}";
+	        return new ResponseEntity<>(s, HttpStatus.OK);
+	    } catch (DataIntegrityViolationException e) {
+	        // Handle the exception, e.g., return a meaningful error response
+	        return new ResponseEntity<>("{\"error\":\"Referential integrity constraint violation.\"}", HttpStatus.BAD_REQUEST);
+	    }
 	}
 	
 	
-	
-	/*
-	@Autowired
-	private EntityManager em;
-	
-	
-	@GetMapping("/test")
-	public String testRes(@RequestParam(value="name", defaultValue="Welt!") String test) {
-		return "The Server says\n\"Hallo "+test+"\"";
+	@PutMapping("/update/{id}")
+	public ResponseEntity<?> updateCompanyById(@RequestBody CompanyDto compUpd, @PathVariable("id") long id){
+		log.trace("Updating Company by id "+id);
+		if (!company.existsById(id)) {
+            return new ResponseEntity<>("{\"error\":\"Company not found.\"}", HttpStatus.NOT_FOUND);
+        }
+		return new ResponseEntity<>("{\"error\":\"Update not working atm\"}", HttpStatus.BAD_REQUEST);
+		//company.findById(null))
 	}
-	
-	@GetMapping("/job")
-	public List<Jobs> getJobs(
-	        @RequestParam(value = "title", defaultValue = "is not null", required = false) String title,
-	        @RequestParam(value = "pensum", defaultValue = "is not null", required = false) String pensum,
-	        @RequestParam(value = "typ", defaultValue = "is not null", required = false) String type,
-	        @RequestParam(value = "sort", defaultValue = "asc", required = false) String sort) {
-
-	    StringBuilder jpqlBuilder = new StringBuilder("SELECT j FROM j WHERE id is not null");
-
-	    jpqlBuilder.append(!title.equals("is not null") ? " AND FROM j.title = :title" : "");
-	    jpqlBuilder.append(!pensum.equals("is not null") ? " AND FROM j.pensum = :pensum" : "");
-	    jpqlBuilder.append(!type.equals("is not null") ? " AND FROM j.type = :type" : "");
-
-	    jpqlBuilder.append(" ORDER BY j.updated ").append(sort.equals("asc") ? "asc" : "desc");
-
-	    TypedQuery<Jobs> query = em.createQuery(jpqlBuilder.toString(), Jobs.class);
-
-	    query.setParameter("title", !title.equals("is not null") ? title : null);
-	    query.setParameter("pensum", !pensum.equals("is not null") ? pensum : null);
-	    query.setParameter("type", !type.equals("is not null") ? type : null);
-
-	    return query.getResultList();
-	}
-	
-	
-	@GetMapping("/jobs")
-	public List<Jobs> getAllJobs(
-			@RequestParam(value="pageid",defaultValue="0", required=false) int pageid,
-			@RequestParam(value="pagesize",defaultValue="3", required=false) int pagesize){
-		
-		TypedQuery<Jobs> query = em.createQuery("select j from j",Jobs.class).setFirstResult(pagesize*pageid).setMaxResults(pagesize);
-		return query.getResultList();
-	}
-	//*/
 }
 
 /*

@@ -29,10 +29,14 @@ public class Company {
 
 	
 	
-	public Company(String name, String plz, String ort) {
+	public Company(String name, String logo_url, String address, String plz, String ort, String website) {
 		setName(name);
+		setLogo_url(logo_url);
+		setAddress(address);
 		setPlz(plz);
 		setOrt(ort);
+		setWebsite(website);
+		
 	}
 
 	@Override
