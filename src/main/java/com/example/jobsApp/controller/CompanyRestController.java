@@ -1,21 +1,13 @@
 package com.example.jobsApp.controller;
 
-import java.rmi.ServerException;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.example.jobsApp.models.Company;
 import com.example.jobsApp.repositories.CompanyRepository;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 
-import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
-@SuppressWarnings("unused")
 @Tag(name = "Company", description = "Company API")
 @RestController
 @RequestMapping("/api/company")
@@ -45,8 +34,8 @@ public class CompanyRestController {
 	}
 	
 	@GetMapping(value= {"/test","/test/{name}"})
-	public String testConnection(@PathVariable("name") Optional<String> i) {
-		if(i.get().equals("marco")) {
+	public String testConnection(@PathVariable("name") String i) {
+		if(i.equals("marco")) {
 			return "polo";
 		}
 		return "Test successful";
@@ -63,10 +52,10 @@ public class CompanyRestController {
 	public ResponseEntity<List<Company>> allCompanies() {
 		List<Company> a = company.findAll();
 		log.trace("Looked for Companies");
-		return new ResponseEntity<>(a, HttpStatus.OK);
+		return ResponseEntity.ok(a);
 	}
 	
-	@GetMapping(value = "/findById/{id}")
+	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> getCompanyByID(@PathVariable("id") Long id) {
 		log.trace("Search Company by ID: "+id);
 		
@@ -79,7 +68,7 @@ public class CompanyRestController {
 		//return ;
 	}
 	
-	@PostMapping(value = "/add")
+	@PostMapping(value = "/create")
 	public ResponseEntity<Company> addNewCompany(@RequestBody CompanyDto newComp) {
 		log.trace("Creating Company");
 		Company comp = new Company(newComp.name(),newComp.logo_url(),newComp.address(),newComp.plz(),newComp.ort(),newComp.website()); //company.save(newComp);

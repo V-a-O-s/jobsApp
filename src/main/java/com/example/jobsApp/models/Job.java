@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Access(AccessType.FIELD)
@@ -21,7 +22,9 @@ public class Job {
 	private long id;
 	private String title;
 	private String description;
+	@NotNull
 	private long company_id;
+	@NotNull
 	private int anzahl;
 	private String status;
 	private String pensum;
@@ -29,14 +32,13 @@ public class Job {
 	
 	protected Job() {}
 	
-	public Job(String title, String description, long company_id, int anzahl, String status, String pensum, Timestamp updated) {
+	public Job(String title, String description, long company_id, int anzahl, String status, String pensum) {
 	    setTitle(title);
 	    setDescription(description);
 	    setCompany_id(company_id);
 	    setAnzahl(anzahl);
 	    setStatus(status);
 	    setPensum(pensum);
-	    setUpdated(updated);
 	}
 	
 	public long getId() {
