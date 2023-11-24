@@ -29,7 +29,7 @@ public class Job {
 	private String status;
 	private String pensum;
 	private Timestamp updated;
-	
+		
 	protected Job() {}
 	
 	public Job(String title, String description, long company_id, int anzahl, String status, String pensum) {
@@ -77,12 +77,30 @@ public class Job {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	public void setPensum(String pensum) {
+		switch(pensum) {
+			case "20":
+				this.pensum = pensum;
+				break;
+			case "40":
+				this.pensum = pensum;
+				break;
+			case "60":
+				this.pensum = pensum;
+				break;
+			case "80":
+				this.pensum = pensum;
+				break;
+			default:
+				this.pensum = "100";
+		}
+		
+		this.pensum = pensum;
+    }
 	public String getPensum() {
 		return pensum;
 	}
-	public void setPensum(String pensum) {
-		this.pensum = pensum;
-	}
+	
 	public Timestamp getUpdated() {
 		return updated;
 	}
