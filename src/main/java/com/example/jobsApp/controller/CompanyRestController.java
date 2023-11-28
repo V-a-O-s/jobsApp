@@ -1,6 +1,8 @@
 package com.example.jobsApp.controller;
 
 import java.util.List;
+import java.util.Objects;
+
 import com.example.jobsApp.models.Company;
 import com.example.jobsApp.repositories.CompanyRepository;
 
@@ -69,12 +71,24 @@ public class CompanyRestController {
 	}
 	
 	@PostMapping(value = "/create")
-	public ResponseEntity<Company> addNewCompany(@RequestBody CompanyDto newComp) {
+	public ResponseEntity<?> addNewCompany(@RequestBody CompanyDto newComp) {
 		log.trace("Creating Company");
-		Company comp = new Company(newComp.name(),newComp.logo_url(),newComp.address(),newComp.plz(),newComp.ort(),newComp.website()); //company.save(newComp);
+		
+		if(Objects.isNull(newComp.id())){
+			return new ResponseEntity<>("Id must be null",HttpStatus.BAD_REQUEST);
+		}
+		
+		Company comp = new Company(
+				newComp.name(),
+				newComp.logo_url(),
+				newComp.address(),
+				newComp.plz(),
+				newComp.ort(),
+				newComp.website());
+		
 		comp = company.save(comp);
 		if(comp==null) {
-			return new ResponseEntity<>(comp, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>("Error creating new Company", HttpStatus.INTERNAL_SERVER_ERROR);
 		}else {
 			return new ResponseEntity<>(comp, HttpStatus.CREATED);
 		}

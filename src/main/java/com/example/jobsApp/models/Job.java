@@ -33,17 +33,15 @@ public class Job {
 	    setTitle(title);
 	    setDescription(description);
 	    setCompany_id(company_id);
-	    setAnzahl(anzahl);
-	    setStatus(status);
-	    setPensum(pensum);
+	    setAnzahl((anzahl != null) ? anzahl : "1");
+	    setStatus((status != null) ? status : "Job");
+	    setPensum((pensum != null) ? pensum : "100");
 	}
 	
 	public long getId() {
 		return id;
 	}
-	public void setId(long id) {
-		this.id = id;
-	}
+	
 	public String getTitle() {
 		return title;
 	}
@@ -72,9 +70,20 @@ public class Job {
 		return status;
 	}
 	public void setStatus(String status) {
-		this.status = status;
+		switch(status) {
+			case "Lehrstelle":
+				this.status = status;
+				break;
+			case "Praktikum":
+				this.status = status;
+				break;
+			default:
+				this.status= "Job";
+		}
+		//this.status = status;
 	}
 	public void setPensum(String pensum) {
+		
 		switch(pensum) {
 			case "20":
 				this.pensum = pensum;
@@ -92,7 +101,7 @@ public class Job {
 				this.pensum = "100";
 		}
 		
-		this.pensum = pensum;
+		//this.pensum = pensum;
     }
 	public String getPensum() {
 		return pensum;

@@ -1,5 +1,6 @@
 package com.example.jobsApp.controller;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -33,6 +34,10 @@ public class JobsAppRestController {
 
 	@PostMapping("/create")
 	public ResponseEntity<?> create(@RequestBody JobDto newJobDto) {
+		if(Objects.isNull(newJobDto.id())){
+			return new ResponseEntity<>("Id must be null",HttpStatus.BAD_REQUEST);
+		}
+		
 		Job newJob = new Job(
 			newJobDto.title(),
 	        newJobDto.description(),
@@ -44,8 +49,8 @@ public class JobsAppRestController {
 		
 		newJob = jobs.save(newJob);
 		
-		if(newJob==null) {
-			return new ResponseEntity<>(newJob, HttpStatus.INTERNAL_SERVER_ERROR);
+		if(Objects.isNull(newJob)) {
+			return new ResponseEntity<>("Error creating new Job", HttpStatus.INTERNAL_SERVER_ERROR);
 		}else {
 			return new ResponseEntity<>(newJob, HttpStatus.CREATED);
 		}
