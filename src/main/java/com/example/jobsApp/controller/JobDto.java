@@ -3,22 +3,21 @@ package com.example.jobsApp.controller;
 import com.example.jobsApp.models.Job;
 
 record JobDto(
-		  long id,
 		  String title,
 		  String description,
-		  long company_id,
-		  int anzahl,
+		  String company_id,
+		  String anzahl,
 		  String status,
 		  String pensum) {
-
-	  public static JobDto fromDomain(Job a) {
-		    return new JobDto(a.getId(),
-		        a.getTitle(),
-		        a.getDescription(),
-		        a.getCompany_id(),
-		        a.getAnzahl(),
-		        a.getStatus(),
-		        a.getPensum()
-		    		);
-	  }
+	
+	public static JobDto fromDomain(Job a) {
+		return new JobDto(
+			a.getTitle(),
+		    a.getDescription(),
+		    a.getCompany_id(),
+		    a.getAnzahl(),
+		    a.getStatus(),
+		    a.getPensum()
+		);
+	}
 }

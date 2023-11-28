@@ -99,7 +99,7 @@ public class CompanyRestController {
 	}
 	
 	
-	@PutMapping("/update/{id}")
+	/*@PutMapping("/update/{id}")
 	public ResponseEntity<?> updateCompanyById(@RequestBody CompanyDto compUpd, @PathVariable("id") long id){
 		log.trace("Updating Company by id "+id);
 		if (!company.existsById(id)) {
@@ -107,7 +107,9 @@ public class CompanyRestController {
         }
 		return new ResponseEntity<>("{\"error\":\"Update not working atm\"}", HttpStatus.BAD_REQUEST);
 		//company.findById(null))
-	}
+	}//*/
+	
+
 }
 
 /*

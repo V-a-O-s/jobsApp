@@ -27,8 +27,6 @@ public class Company {
 	
 	protected Company() {}
 
-	
-	
 	public Company(String name, String logo_url, String address, String plz, String ort, String website) {
 		setName(name);
 		setLogo_url(logo_url);

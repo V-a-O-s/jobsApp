@@ -1,6 +1,5 @@
 package com.example.jobsApp.controller;
 
-import java.net.URI;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -14,11 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jobsApp.models.Job;
-import com.example.jobsApp.repositories.CompanyRepository;
 import com.example.jobsApp.repositories.JobRepository;
-
-//import com.example.jobsApp.models.Company;
-//import com.example.jobsApp.repositories.CompanyRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -35,37 +30,26 @@ public class JobsAppRestController {
 		log.trace("calling constructor");
 		this.jobs = jobs;
 	}
-	
-	CompanyRepository company;
-	
-	public void CompanyRestController(CompanyRepository company) {
-		log.trace("company constructor");
-		this.company = company;
-	}
 
 	@PostMapping("/create")
 	public ResponseEntity<?> create(@RequestBody JobDto newJobDto) {
-	    if (newJobDto.anzahl() >= 1) {
-	    	long a = newJobDto.company_id();
-			if (company.existsById(a)) {
-			    Job newJob = new Job(
-			            newJobDto.title(),
-			            newJobDto.description(),
-			            //newJobDto.company_id(),
-			            a,
-			            newJobDto.anzahl(),
-			            newJobDto.status(),
-			            newJobDto.pensum()
-			    );
-
-			    newJob = jobs.save(newJob);
-			    return ResponseEntity.created(URI.create("/api/jobs/" + newJob.getId())).body(JobDto.fromDomain(newJob));
-			} else {
-			    return new ResponseEntity<>("{\"error\":\"Company not found.\"}", HttpStatus.BAD_REQUEST);
-			}
-	    }
-
-	    return new ResponseEntity<>("{\"error\":\"Invalid anzahl value.\"}", HttpStatus.BAD_REQUEST);
+		Job newJob = new Job(
+			newJobDto.title(),
+	        newJobDto.description(),
+	        newJobDto.company_id(),
+	        newJobDto.anzahl(),
+	        newJobDto.status(),
+	        newJobDto.pensum()
+	    );
+		
+		newJob = jobs.save(newJob);
+		
+		if(newJob==null) {
+			return new ResponseEntity<>(newJob, HttpStatus.INTERNAL_SERVER_ERROR);
+		}else {
+			return new ResponseEntity<>(newJob, HttpStatus.CREATED);
+		}
+		
 	}
 
 
@@ -77,7 +61,6 @@ public class JobsAppRestController {
 
 	}
 
-// bad: -> paging!
 	@Operation(summary = "Fetch all jobs. ", description = "fetches all job entities from the datasource.")
 	@GetMapping("/all")
 	public ResponseEntity<?> jobs() {

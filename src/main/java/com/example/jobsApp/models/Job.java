@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Access(AccessType.FIELD)
@@ -19,20 +18,18 @@ public class Job {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	long id;
 	private String title;
 	private String description;
-	@NotNull
-	private long company_id;
-	@NotNull
-	private int anzahl;
+	private String company_id;
+	private String anzahl;
 	private String status;
 	private String pensum;
 	private Timestamp updated;
 		
 	protected Job() {}
 	
-	public Job(String title, String description, long company_id, int anzahl, String status, String pensum) {
+	public Job(String title, String description, String company_id, String anzahl, String status, String pensum) {
 	    setTitle(title);
 	    setDescription(description);
 	    setCompany_id(company_id);
@@ -59,16 +56,16 @@ public class Job {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public long getCompany_id() {
+	public String getCompany_id() {
 		return company_id;
 	}
-	public void setCompany_id(long company_id) {
+	public void setCompany_id(String company_id) {
 		this.company_id = company_id;
 	}
-	public int getAnzahl() {
+	public String getAnzahl() {
 		return anzahl;
 	}
-	public void setAnzahl(int anzahl) {
+	public void setAnzahl(String anzahl) {
 		this.anzahl = anzahl;
 	}
 	public String getStatus() {
@@ -109,11 +106,13 @@ public class Job {
 	}
 
 
+	
+
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(pensum, title);
+		return Objects.hash(title);
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -124,12 +123,11 @@ public class Job {
 		if (getClass() != obj.getClass())
 			return false;
 		Job other = (Job) obj;
-		return Objects.equals(pensum, other.pensum) && Objects.equals(title, other.title);
+		return Objects.equals(title, other.title);
 	}
-
 
 	@Override
 	public String toString() {
 		return status+" as a "+title+" at "+ pensum + "%";
-	}
+	}//*/
 }
