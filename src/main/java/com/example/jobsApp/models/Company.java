@@ -39,7 +39,7 @@ public class Company {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(name);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class Company {
 		if (getClass() != obj.getClass())
 			return false;
 		Company other = (Company) obj;
-		return id == other.id;
+		return name == other.name;
 	}
 
 	@Override

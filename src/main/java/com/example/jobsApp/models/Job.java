@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,6 +21,7 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	long id;
 	private String title;
+	@Column(nullable = false)
 	private String description;
 	private String company_id;
 	private String anzahl;
@@ -36,6 +38,7 @@ public class Job {
 	    setAnzahl((anzahl != null) ? anzahl : "1");
 	    setStatus((status != null) ? status : "Job");
 	    setPensum((pensum != null) ? pensum : "100");
+	    setUpdated(new Timestamp(System.currentTimeMillis()));
 	}
 	
 	public long getId() {

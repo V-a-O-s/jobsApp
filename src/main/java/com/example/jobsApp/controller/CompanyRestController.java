@@ -35,8 +35,9 @@ public class CompanyRestController {
 		this.company = company;
 	}
 	
-	@GetMapping(value= {"/test","/test/{name}"})
-	public String testConnection(@PathVariable("name") String i) {
+	@GetMapping(value= {"/test/","/test/{name}"})
+	public String testConnection(@PathVariable(name = "name", required = false) String i) {
+		i= (i==null)?"-":i;
 		if(i.equals("marco")) {
 			return "polo";
 		}
@@ -74,7 +75,7 @@ public class CompanyRestController {
 	public ResponseEntity<?> addNewCompany(@RequestBody CompanyDto newComp) {
 		log.trace("Creating Company");
 		
-		if(Objects.isNull(newComp.id())){
+		if(newComp.id()!=null){
 			return new ResponseEntity<>("Id must be null",HttpStatus.BAD_REQUEST);
 		}
 		
@@ -94,12 +95,12 @@ public class CompanyRestController {
 		}
 	}
 	
-	@DeleteMapping(value = "/remove/{id}")
+	@DeleteMapping(value = "/delete/{id}")
 	public ResponseEntity<String> removeCompany(@PathVariable("id") Long id){
 		log.trace("Deleteing company by id "+id);
 	    
 		if (!company.existsById(id)) {
-            return new ResponseEntity<>("{\"error\":\"Company not found.\"}", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
         }
 		
 		try {
@@ -107,8 +108,7 @@ public class CompanyRestController {
 	        String s = "{\"deleted\":" + id + "}";
 	        return new ResponseEntity<>(s, HttpStatus.OK);
 	    } catch (DataIntegrityViolationException e) {
-	        // Handle the exception, e.g., return a meaningful error response
-	        return new ResponseEntity<>("{\"error\":\"Referential integrity constraint violation.\"}", HttpStatus.BAD_REQUEST);
+	        return new ResponseEntity<>("Referential integrity constraint violation.", HttpStatus.BAD_REQUEST);
 	    }
 	}
 	

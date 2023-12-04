@@ -28,6 +28,5 @@ CREATE TABLE IF NOT EXISTS Jobs (
     anzahl VARCHAR(3), --INT DEFAULT 1,
     status varchar(12), --ENUM('Praktikum', 'Lehrstelle', 'Job'),
     pensum VARCHAR(3), --ENUM('20', '40', '60', '80', '100'),
-    updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (company_id) REFERENCES Company(id)
+    updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

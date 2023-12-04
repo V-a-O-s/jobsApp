@@ -3,7 +3,7 @@ package com.example.jobsApp.controller;
 import com.example.jobsApp.models.Job;
 
 record JobDto(
-		long id,
+		Long id,
 		String title,
 		String description,
 		String company_id,
