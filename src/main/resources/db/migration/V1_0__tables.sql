@@ -24,9 +24,9 @@ CREATE TABLE IF NOT EXISTS Jobs (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
-    company_id VARCHAR(32) NOT NULL,
-    anzahl VARCHAR(3), --INT DEFAULT 1,
-    status varchar(12), --ENUM('Praktikum', 'Lehrstelle', 'Job'),
+    company_id BIGINT NOT NULL,
+    anzahl INT DEFAULT 1,
+    status VARCHAR(12), --ENUM('Praktikum', 'Lehrstelle', 'Job'),
     pensum VARCHAR(3), --ENUM('20', '40', '60', '80', '100'),
     updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

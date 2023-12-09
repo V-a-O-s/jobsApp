@@ -1,12 +1,11 @@
 package com.example.jobsApp.controller;
 
-import java.util.List;
-import java.util.Objects;
-
 import com.example.jobsApp.models.Company;
 import com.example.jobsApp.repositories.CompanyRepository;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,56 +28,43 @@ public class CompanyRestController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	final CompanyRepository company;
-	
+
 	public CompanyRestController(CompanyRepository company) {
 		log.trace("company constructor");
 		this.company = company;
 	}
-	
-	@GetMapping(value= {"/test/","/test/{name}"})
-	public String testConnection(@PathVariable(name = "name", required = false) String i) {
-		i= (i==null)?"-":i;
-		if(i.equals("marco")) {
-			return "polo";
-		}
-		return "Test successful";
-	}
-	
+
 	@GetMapping("/stat/total")
 	public ResponseEntity<String> totalNumberCompanies() {
 		log.trace("Counting Companies");
 		long c = company.count();
 		return new ResponseEntity<>(String.valueOf(c),HttpStatus.OK);
 	}
-	
-	@GetMapping("/all")
-	public ResponseEntity<List<Company>> allCompanies() {
-		List<Company> a = company.findAll();
+
+	@GetMapping
+	public ResponseEntity<?> allCompanies() {
 		log.trace("Looked for Companies");
-		return ResponseEntity.ok(a);
+		return ResponseEntity.ok(company.findAll());
 	}
-	
+
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> getCompanyByID(@PathVariable("id") Long id) {
 		log.trace("Search Company by ID: "+id);
-		
+
 		if (!company.existsById(id)) {
-            return new ResponseEntity<>("{\"error\":\"Company not found.\"}", HttpStatus.NOT_FOUND);
-        }
-		//company.findAll().stream().filter(t -> t.getId()==id).toList().get(0)
+			return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
+		}
 		return new ResponseEntity<>(company.findById(id), HttpStatus.OK);
-		//return a.get(0);
-		//return ;
 	}
-	
-	@PostMapping(value = "/create")
+
+	@PostMapping
 	public ResponseEntity<?> addNewCompany(@RequestBody CompanyDto newComp) {
 		log.trace("Creating Company");
-		
+
 		if(newComp.id()!=null){
 			return new ResponseEntity<>("Id must be null",HttpStatus.BAD_REQUEST);
 		}
-		
+
 		Company comp = new Company(
 				newComp.name(),
 				newComp.logo_url(),
@@ -86,7 +72,7 @@ public class CompanyRestController {
 				newComp.plz(),
 				newComp.ort(),
 				newComp.website());
-		
+
 		comp = company.save(comp);
 		if(comp==null) {
 			return new ResponseEntity<>("Error creating new Company", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -94,52 +80,49 @@ public class CompanyRestController {
 			return new ResponseEntity<>(comp, HttpStatus.CREATED);
 		}
 	}
-	
-	@DeleteMapping(value = "/delete/{id}")
+
+	@DeleteMapping("/{id}")
 	public ResponseEntity<String> removeCompany(@PathVariable("id") Long id){
 		log.trace("Deleteing company by id "+id);
-	    
+
 		if (!company.existsById(id)) {
-            return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
-        }
-		
+			return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
+		}
+
 		try {
-	        company.deleteById(id);
-	        String s = "{\"deleted\":" + id + "}";
-	        return new ResponseEntity<>(s, HttpStatus.OK);
-	    } catch (DataIntegrityViolationException e) {
-	        return new ResponseEntity<>("Referential integrity constraint violation.", HttpStatus.BAD_REQUEST);
-	    }
+			company.deleteById(id);
+			String s = "deleted: " + id;
+			return new ResponseEntity<>(s, HttpStatus.OK);
+		} catch (DataIntegrityViolationException e) {
+			return new ResponseEntity<>("Referential integrity constraint violation.", HttpStatus.BAD_REQUEST);
+		}
 	}
-	
-	
-	/*@PutMapping("/update/{id}")
-	public ResponseEntity<?> updateCompanyById(@RequestBody CompanyDto compUpd, @PathVariable("id") long id){
-		log.trace("Updating Company by id "+id);
-		if (!company.existsById(id)) {
-            return new ResponseEntity<>("{\"error\":\"Company not found.\"}", HttpStatus.NOT_FOUND);
-        }
-		return new ResponseEntity<>("{\"error\":\"Update not working atm\"}", HttpStatus.BAD_REQUEST);
-		//company.findById(null))
-	}//*/
-	
 
+
+	@PutMapping("/{id}")
+	public ResponseEntity<?> update(@PathVariable long id, @RequestBody CompanyDto companyDto) {
+	    if (companyDto.id() != null && companyDto.id() != id) {
+	        return new ResponseEntity<>("Path variable of id is not equal to company id", HttpStatus.CONFLICT);
+	    }
+	    
+	    Optional<Company> maybeCompany = company.findById(id);
+	    if (maybeCompany.isEmpty()) {
+	        return new ResponseEntity<>("Unable to update company with given id " + id, HttpStatus.NOT_FOUND);
+	    }
+	    
+	    Company comp = maybeCompany.get();
+	    comp.setName(companyDto.name());
+	    comp.setLogoUrl(companyDto.logo_url());
+	    comp.setAddress(companyDto.address());
+	    comp.setPlz(companyDto.plz());
+	    comp.setOrt(companyDto.ort());
+	    comp.setWebsite(companyDto.website());
+	    
+	    comp = company.save(comp);
+
+	    return ResponseEntity.ok(comp);
+	}
 }
-
-/*
-/company		plz,ort,name
-/job 			title,pensum, typ, sort
-/extras 		remote, flexibel, signup, devices, extralohn
-
-/job/extra  	/job, /extras
-/company/extra	/company, /extras
-
-/jobs
-/companies
-
-
-
-//*/
 
 
 

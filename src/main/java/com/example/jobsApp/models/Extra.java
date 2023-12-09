@@ -1,7 +1,10 @@
 package com.example.jobsApp.models;
 
+import java.util.Objects;
+
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,34 +15,27 @@ import jakarta.persistence.Table;
 @Access(AccessType.FIELD)
 @Table(name="extras")
 public class Extra {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	long id;
+	Long id;
 	private Boolean remote;
 	private Boolean flexibel;
-	private Boolean sign_up;
+	@Column(name = "sign_up")
+	private Boolean signUp;
 	private Boolean devices;
 	private Boolean extrapay;
 	private String sonstiges;
-	
+
 	protected Extra( ) {}
-	
+
 	public Extra(Boolean remote, Boolean flexibel, Boolean signup, Boolean devices, Boolean extrapay, String sonstiges) {
 		setRemote(remote);
 		setFlexibel(flexibel);
-		setSignup(signup);
+		setSignUp(signup);
 		setDevices(devices);
 		setExtrapay(extrapay);
 		setSonstiges(sonstiges);
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public Boolean getRemote() {
@@ -58,12 +54,12 @@ public class Extra {
 		this.flexibel = flexibel;
 	}
 
-	public Boolean getSignup() {
-		return sign_up;
+	public Boolean getSignUp() {
+		return signUp;
 	}
 
-	public void setSignup(Boolean signup) {
-		this.sign_up = signup;
+	public void setSignUp(Boolean signUp) {
+		this.signUp = signUp;
 	}
 
 	public Boolean getDevices() {
@@ -89,8 +85,36 @@ public class Extra {
 	public void setSonstiges(String sonstiges) {
 		this.sonstiges = sonstiges;
 	}
-	
+
+	public long getId() {
+		return id;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(sonstiges);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Extra other = (Extra) obj;
+		return Objects.equals(sonstiges, other.sonstiges);
+	}
+
+	@Override
+	public String toString() {
+		return "Extra [id=" + id + ", remote=" + remote + ", flexibel=" + flexibel + ", signUp=" + signUp
+				+ ", devices=" + devices + ", extrapay=" + extrapay + ", sonstiges=" + sonstiges + "]";
+	}
+
 	
+}
+
 
 

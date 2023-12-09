@@ -23,56 +23,70 @@ public class Job {
 	private String title;
 	@Column(nullable = false)
 	private String description;
-	private String company_id;
-	private String anzahl;
+	@Column(name = "companyId")
+	private Long companyId;
+	@Column(name = "anzahl")
+	private Integer quantity;
+	@Column(nullable = false)
 	private String status;
-	private String pensum;
+	@Column(nullable = false, name = "pensum")
+	private String workload;
 	private Timestamp updated;
 		
 	protected Job() {}
 	
-	public Job(String title, String description, String company_id, String anzahl, String status, String pensum) {
+	public Job(String title, String description, Long companyId, Integer quantity, String status, String workload) {
 	    setTitle(title);
 	    setDescription(description);
-	    setCompany_id(company_id);
-	    setAnzahl((anzahl != null) ? anzahl : "1");
+	    setCompanyId(companyId);
+	    setQuantity((quantity != null) ? quantity : 1);
 	    setStatus((status != null) ? status : "Job");
-	    setPensum((pensum != null) ? pensum : "100");
+	    setWorkload((workload != null) ? workload : "100");
 	    setUpdated(new Timestamp(System.currentTimeMillis()));
 	}
-	
-	public long getId() {
-		return id;
-	}
-	
+
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getCompany_id() {
-		return company_id;
+
+	public Long getCompanyId() {
+		return companyId;
 	}
-	public void setCompany_id(String company_id) {
-		this.company_id = company_id;
+
+	public void setCompanyId(Long companyId) {
+		this.companyId = companyId;
 	}
-	public String getAnzahl() {
-		return anzahl;
+
+	public Integer getQuantity() {
+		return quantity;
 	}
-	public void setAnzahl(String anzahl) {
-		this.anzahl = anzahl;
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
 	}
+
 	public String getStatus() {
 		return status;
 	}
+
+	public String getWorkload() {
+		return workload;
+	}
+
 	public void setStatus(String status) {
+		//*
 		switch(status) {
 			case "Lehrstelle":
 				this.status = status;
@@ -83,47 +97,43 @@ public class Job {
 			default:
 				this.status= "Job";
 		}
-		//this.status = status;
+		//*/this.status = status;
 	}
-	public void setPensum(String pensum) {
-		
-		switch(pensum) {
+	public void setWorkload(String workload) {
+		//*
+		switch(workload) {
 			case "20":
-				this.pensum = pensum;
+				this.workload = workload;
 				break;
 			case "40":
-				this.pensum = pensum;
+				this.workload = workload;
 				break;
 			case "60":
-				this.pensum = pensum;
+				this.workload = workload;
 				break;
 			case "80":
-				this.pensum = pensum;
+				this.workload = workload;
 				break;
 			default:
-				this.pensum = "100";
+				this.workload = "100";
 		}
-		
-		//this.pensum = pensum;
+		//*/this.workload = workload;
     }
-	public String getPensum() {
-		return pensum;
-	}
-	
 	public Timestamp getUpdated() {
 		return updated;
 	}
+
 	public void setUpdated(Timestamp updated) {
 		this.updated = updated;
 	}
 
-
-	
-
+	public long getId() {
+		return id;
+	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(title);
+		return Objects.hash(id, title);
 	}
 
 	@Override
@@ -135,11 +145,14 @@ public class Job {
 		if (getClass() != obj.getClass())
 			return false;
 		Job other = (Job) obj;
-		return Objects.equals(title, other.title);
+		return id == other.id && Objects.equals(title, other.title);
 	}
 
 	@Override
 	public String toString() {
-		return status+" as a "+title+" at "+ pensum + "%";
-	}//*/
+		return "Job [id=" + id + ", title=" + title + ", description=" + description + ", companyId=" + companyId
+				+ ", quantity=" + quantity + ", status=" + status + ", workload=" + workload + ", updated=" + updated + "]";
+	}
+	
+	
 }

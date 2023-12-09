@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,7 +20,8 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	long id;
 	private String name;
-	private String logo_url;
+	@Column(name = "logo_url")
+	private String logoUrl;
 	private String address;
 	private String plz;
 	private String ort;
@@ -27,9 +29,9 @@ public class Company {
 	
 	protected Company() {}
 
-	public Company(String name, String logo_url, String address, String plz, String ort, String website) {
+	public Company(String name, String logoUrl, String address, String plz, String ort, String website) {
 		setName(name);
-		setLogo_url(logo_url);
+		setLogoUrl(logoUrl);
 		setAddress(address);
 		setPlz(plz);
 		setOrt(ort);
@@ -68,12 +70,12 @@ public class Company {
 		this.name = name;
 	}
 
-	public String getLogo_url() {
-		return logo_url;
+	public String getLogoUrl() {
+		return logoUrl;
 	}
 
-	public void setLogo_url(String logo_url) {
-		this.logo_url = logo_url;
+	public void setLogoUrl(String logoUrl) {
+		this.logoUrl = logoUrl;
 	}
 
 	public String getAddress() {

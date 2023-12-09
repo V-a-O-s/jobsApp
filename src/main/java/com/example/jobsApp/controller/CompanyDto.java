@@ -15,7 +15,7 @@ record CompanyDto(
 		return new CompanyDto(
 			c.getId(),
 			c.getName(),
-			c.getLogo_url(),
+			c.getLogoUrl(),
 			c.getAddress(),
 			c.getPlz(),
 			c.getOrt(),

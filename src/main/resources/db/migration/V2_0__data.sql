@@ -101,7 +101,7 @@ INSERT INTO Extras (remote, flexibel, sign_up, devices, extraPay, sonstiges) VAL
 (True, False, True, False, True, 'Where here front.'),
 (False, True, True, False, True, 'About line listen item store.'),
 (True, False, False, True, False, 'Young particular size child human want including.'),
-(False, True, True, False, False, 'Left short deep he standard allow hot.'); --;
+(False, True, True, False, False, 'Left short deep he standard allow hot.');
 
 INSERT INTO Jobs (title, description, company_id, anzahl, status, pensum) VALUES ('Test', 'Test', 1, 1, 'Job','100'),
 ('Chief Strategy Officer', 'Occur green pretty old right rather second.', 1, 1, 'Praktikum', '40'),
