@@ -38,7 +38,7 @@ public class CompanyRestController {
 	public ResponseEntity<String> totalNumberCompanies() {
 		log.trace("Counting Companies");
 		long c = company.count();
-		return new ResponseEntity<>(String.valueOf(c),HttpStatus.OK);
+		return new ResponseEntity<>(String.valueOf(c), HttpStatus.OK);
 	}
 
 	@GetMapping
@@ -49,7 +49,7 @@ public class CompanyRestController {
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<?> getCompanyByID(@PathVariable("id") Long id) {
-		log.trace("Search Company by ID: "+id);
+		log.trace("Search Company by ID: " + id);
 
 		if (!company.existsById(id)) {
 			return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
@@ -61,29 +61,24 @@ public class CompanyRestController {
 	public ResponseEntity<?> addNewCompany(@RequestBody CompanyDto newComp) {
 		log.trace("Creating Company");
 
-		if(newComp.id()!=null){
-			return new ResponseEntity<>("Id must be null",HttpStatus.BAD_REQUEST);
+		if (newComp.id() != null) {
+			return new ResponseEntity<>("Id must be null", HttpStatus.BAD_REQUEST);
 		}
 
-		Company comp = new Company(
-				newComp.name(),
-				newComp.logo_url(),
-				newComp.address(),
-				newComp.plz(),
-				newComp.ort(),
+		Company comp = new Company(newComp.name(), newComp.logo_url(), newComp.address(), newComp.plz(), newComp.ort(),
 				newComp.website());
 
 		comp = company.save(comp);
-		if(comp==null) {
+		if (comp == null) {
 			return new ResponseEntity<>("Error creating new Company", HttpStatus.INTERNAL_SERVER_ERROR);
-		}else {
+		} else {
 			return new ResponseEntity<>(comp, HttpStatus.CREATED);
 		}
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> removeCompany(@PathVariable("id") Long id){
-		log.trace("Deleteing company by id "+id);
+	public ResponseEntity<String> removeCompany(@PathVariable("id") Long id) {
+		log.trace("Deleteing company by id " + id);
 
 		if (!company.existsById(id)) {
 			return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
@@ -97,32 +92,28 @@ public class CompanyRestController {
 			return new ResponseEntity<>("Referential integrity constraint violation.", HttpStatus.BAD_REQUEST);
 		}
 	}
-
-
+	
 	@PutMapping("/{id}")
 	public ResponseEntity<?> update(@PathVariable long id, @RequestBody CompanyDto companyDto) {
-	    if (companyDto.id() != null && companyDto.id() != id) {
-	        return new ResponseEntity<>("Path variable of id is not equal to company id", HttpStatus.CONFLICT);
-	    }
-	    
-	    Optional<Company> maybeCompany = company.findById(id);
-	    if (maybeCompany.isEmpty()) {
-	        return new ResponseEntity<>("Unable to update company with given id " + id, HttpStatus.NOT_FOUND);
-	    }
-	    
-	    Company comp = maybeCompany.get();
-	    comp.setName(companyDto.name());
-	    comp.setLogoUrl(companyDto.logo_url());
-	    comp.setAddress(companyDto.address());
-	    comp.setPlz(companyDto.plz());
-	    comp.setOrt(companyDto.ort());
-	    comp.setWebsite(companyDto.website());
-	    
-	    comp = company.save(comp);
+		if (companyDto.id() != null && companyDto.id() != id) {
+			return new ResponseEntity<>("Path variable of id is not equal to company id", HttpStatus.CONFLICT);
+		}
 
-	    return ResponseEntity.ok(comp);
+		Optional<Company> maybeCompany = company.findById(id);
+		if (maybeCompany.isEmpty()) {
+			return new ResponseEntity<>("Unable to update company with given id " + id, HttpStatus.NOT_FOUND);
+		}
+
+		Company comp = maybeCompany.get();
+		comp.setName(companyDto.name());
+		comp.setLogoUrl(companyDto.logo_url());
+		comp.setAddress(companyDto.address());
+		comp.setPlz(companyDto.plz());
+		comp.setOrt(companyDto.ort());
+		comp.setWebsite(companyDto.website());
+
+		comp = company.save(comp);
+
+		return ResponseEntity.ok(comp);
 	}
 }
-
-
-

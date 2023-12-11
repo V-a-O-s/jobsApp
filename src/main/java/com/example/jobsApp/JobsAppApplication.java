@@ -11,13 +11,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 public class JobsAppApplication {
 
-    private static final Logger log = LoggerFactory.getLogger(JobsAppApplication.class);
+	private static final Logger log = LoggerFactory.getLogger(JobsAppApplication.class);
 
-    public static void main(String[] args) {
-        ConfigurableApplicationContext ctx = SpringApplication.run(JobsAppApplication.class, args);
+	public static void main(String[] args) {
+		ConfigurableApplicationContext ctx = SpringApplication.run(JobsAppApplication.class, args);
 
-        Arrays.stream(ctx.getBeanDefinitionNames())
-              .sorted()
-              .forEach(name -> log.info(name));
-    }
+		Arrays.stream(ctx.getBeanDefinitionNames()).sorted().forEach(name -> log.info(name));
+	}
 }
